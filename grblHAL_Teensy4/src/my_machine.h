@@ -113,14 +113,14 @@ N_AXIS has a default value of 3, edit grbl\config.h to increase.
 // of axes can be enabled here.
 //#define X_GANGED             1
 //#define X_AUTO_SQUARE        1
-//#define Y_GANGED             1
-//#define Y_AUTO_SQUARE        1
+#define Y_GANGED             1
+#define Y_AUTO_SQUARE        1
 //#define Z_GANGED             1
 //#define Z_AUTO_SQUARE        1
 // For ganged axes the limit switch input (if available) can be configured to act as a max travel limit switch.
 // NOTE: If board map already has max limit inputs defined this configuration will be ignored.
 //#define X_GANGED_LIM_MAX     1
-//#define Y_GANGED_LIM_MAX     1
+#define Y_GANGED_LIM_MAX     1
 //#define Z_GANGED_LIM_MAX     1
 //
 
