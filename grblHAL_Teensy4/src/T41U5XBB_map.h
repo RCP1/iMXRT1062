@@ -73,10 +73,11 @@
 #define AUXOUTPUT5_PIN          (13u)
 #endif
 
+// Switched with flood coolant enable for relay usage
 #if DRIVER_SPINDLE_DIR_ENABLE
-#define SPINDLE_DIRECTION_PIN   (11u)
+#define SPINDLE_DIRECTION_PIN   (19u)
 #else
-#define AUXOUTPUT4_PIN          (11u)
+#define AUXOUTPUT4_PIN          (19u)
 #endif
 
 #if DRIVER_SPINDLE_ENABLE
@@ -86,7 +87,7 @@
 #endif
 
 // Define flood and mist coolant enable output pins.
-#define COOLANT_FLOOD_PIN   (19u)
+#define COOLANT_FLOOD_PIN   (11u)
 #define COOLANT_MIST_PIN    (18u)
 
 // Define user-control CONTROLs (cycle start, reset, feed hold, door) input pins.
