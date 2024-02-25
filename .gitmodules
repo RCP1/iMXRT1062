@@ -43,3 +43,6 @@
 [submodule "grblHAL_Teensy4/src/embroidery"]
 	path = grblHAL_Teensy4/src/embroidery
 	url = https://github.com/grblHAL/Plugin_embroidery
+[submodule "grblHAL_Teensy4/src/rapidchange_atc"]
+	path = grblHAL_Teensy4/src/rapidchange_atc
+	url = https://github.com/rcp1/rapidchange_atc
