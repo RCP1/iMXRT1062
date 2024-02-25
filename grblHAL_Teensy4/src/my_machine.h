@@ -109,6 +109,8 @@ N_AXIS has a default value of 3, edit grbl\config.h to increase.
 //#define SINGLE_BLOCK_ENABLE     1
 //#define LIMITS_OVERRIDE_ENABLE  1
 
+#define ENABLE_BACKLASH_COMPENSATION 1
+
 // If the selected board map supports more than three motors ganging and/or auto-squaring
 // of axes can be enabled here.
 //#define X_GANGED             1
