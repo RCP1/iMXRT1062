@@ -1403,24 +1403,28 @@ static bool aux_claim_explicit (aux_ctrl_t *aux_ctrl)
 
 inline static void spindle_off (void)
 {
+    // LI1 = false
+    // LI2 = false
     DIGITAL_OUT(spindleEnable, settings.spindle.invert.on);
+    DIGITAL_OUT(spindleDir, settings.spindle.invert.ccw);
 }
 
-inline static void spindle_on (spindle_ptrs_t *spindle)
+inline static void spindle_on_dir (spindle_ptrs_t *spindle, bool ccw)
 {
-    DIGITAL_OUT(spindleEnable, !settings.spindle.invert.on);
+    if (ccw) {
+        // LI1 = false
+        DIGITAL_OUT(spindleEnable, settings.spindle.invert.on);
+        // LI2 = true
+        DIGITAL_OUT(spindleDir, !settings.spindle.invert.ccw);
+    } else {
+        // LI1 = true
+        DIGITAL_OUT(spindleEnable, !settings.spindle.invert.on);
+        // LI2 = false
+        DIGITAL_OUT(spindleDir, settings.spindle.invert.ccw);
+    }
 #if SPINDLE_ENCODER_ENABLE
     if(spindle && spindle->reset_data)
         spindle->reset_data();
-#endif
-}
-
-inline static void spindle_dir (bool ccw)
-{
-#ifdef SPINDLE_DIRECTION_PIN
-    DIGITAL_OUT(spindleDir, ccw ^ settings.spindle.invert.ccw);
-#else
-    UNUSED(ccw);
 #endif
 }
 
@@ -1430,8 +1434,7 @@ static void spindleSetState (spindle_ptrs_t *spindle, spindle_state_t state, flo
     if(!state.on)
         spindle_off();
     else {
-        spindle_dir(state.ccw);
-        spindle_on(spindle);
+        spindle_on_dir(spindle, state.ccw);
     }
 }
 
@@ -1444,10 +1447,7 @@ static void spindleSetSpeed (spindle_ptrs_t *spindle, uint_fast16_t pwm_value)
 {
     if(pwm_value == spindle->context.pwm->off_value) {
         if(spindle->context.pwm->settings->flags.enable_rpm_controlled) {
-            if(spindle->context.pwm->cloned)
-                spindle_dir(false);
-            else
-                spindle_off();
+            spindle_off();
         }
         pwmEnabled = false;
         if(spindle->context.pwm->always_on) {
@@ -1461,10 +1461,6 @@ static void spindleSetSpeed (spindle_ptrs_t *spindle, uint_fast16_t pwm_value)
         }
      } else {
         if(!pwmEnabled) {
-            if(spindle->context.pwm->cloned)
-                spindle_dir(true);
-            else
-                spindle_on(spindle);
             pwmEnabled = true;
         }
         SPINDLE_PWM_TIMER_COMP2 = pwm_value;
@@ -1484,12 +1480,11 @@ static void spindleSetStateVariable (spindle_ptrs_t *spindle, spindle_state_t st
 {
 #ifdef SPINDLE_DIRECTION_PIN
     if(state.on || spindle->context.pwm->cloned)
-        spindle_dir(state.ccw);
+        spindle_on_dir(spindle, state.ccw);
 #endif
+
     if(!settings.spindle.flags.enable_rpm_controlled) {
-        if(state.on)
-            spindle_on(spindle);
-        else
+        if (!state.on)
             spindle_off();
     }
 
